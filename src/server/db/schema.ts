@@ -1,8 +1,8 @@
 import { integer, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core"
 import { drizzle } from "drizzle-orm/libsql"
 import type { AdapterAccountType } from "next-auth/adapters"
-import { db } from "." 
- 
+import { db } from "."
+
 export const users = sqliteTable("user", {
   id: text("id")
     .primaryKey()
@@ -12,7 +12,7 @@ export const users = sqliteTable("user", {
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
 })
- 
+
 export const accounts = sqliteTable(
   "account",
   {
@@ -36,7 +36,7 @@ export const accounts = sqliteTable(
     }),
   })
 )
- 
+
 export const sessions = sqliteTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
@@ -44,7 +44,7 @@ export const sessions = sqliteTable("session", {
     .references(() => users.id, { onDelete: "cascade" }),
   expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
 })
- 
+
 export const verificationTokens = sqliteTable(
   "verificationToken",
   {
@@ -58,7 +58,7 @@ export const verificationTokens = sqliteTable(
     }),
   })
 )
- 
+
 export const authenticators = sqliteTable(
   "authenticator",
   {
@@ -81,3 +81,11 @@ export const authenticators = sqliteTable(
     }),
   })
 )
+
+export const posts = sqliteTable("post", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull().$defaultFn(() => new Date()),
+});

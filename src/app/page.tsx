@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { sql } from "drizzle-orm";
 import { auth, signIn, signOut } from "@/server/auth";
 import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
+import { users, posts } from "@/server/db/schema";
 import { getThemeToggler } from "@/lib/theme/get-theme-button";
 
 export const runtime = "edge";
@@ -16,13 +16,28 @@ export default async function Page() {
 		})
 		.from(users);
 
+	const allPosts = await db
+		.select({
+			id: posts.id,
+			title: posts.title,
+			content: posts.content,
+		})
+		.from(posts);
+
 	const SetThemeButton = getThemeToggler();
 
 	return (
 		<main className="flex flex-col items-center justify-center min-h-screen">
 			<div className="flex max-w-2xl justify-between w-full">
 				<SetThemeButton />
-
+				<div>
+					{allPosts.map((post) => (
+						<div key={post.id}>
+							<h1>{post.title}</h1>
+							<p>{post.content}</p>
+						</div>
+					))}
+				</div>
 				<div className="flex gap-2 items-center justify-center">
 					{" "}
 					<svg
@@ -77,12 +92,12 @@ export default async function Page() {
 					<li>Database using Cloudflare&apos;s D1 serverless databases</li>
 					<li>Drizzle ORM, already connected to your database and auth ⚡</li>
 					<li>Light/darkmode theming that works with server components (!)</li>
-						<li>Styling using TailwindCSS and ShadcnUI</li>
-						<li>Turborepo with a landing page and shared components</li>
-						<li>Cloudflare wrangler for quick functions on the edge</li>
-						<li>
-							... best part: everything&apos;s already set up for you. Just code!
-						</li>
+					<li>Styling using TailwindCSS and ShadcnUI</li>
+					<li>Turborepo with a landing page and shared components</li>
+					<li>Cloudflare wrangler for quick functions on the edge</li>
+					<li>
+						... best part: everything&apos;s already set up for you. Just code!
+					</li>
 				</ul>
 				<div className="mt-4 flex flex-col gap-2">
 					<span>Number of users in database: {userCount[0]!.count}</span>

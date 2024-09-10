@@ -11,7 +11,11 @@
     "preview": "bun pages:build && wrangler pages dev",
     "deploy": "bun pages:build && wrangler pages deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
-    "setup": "bun run scripts/setup.ts"
+    "setup": "bun run scripts/setup.ts",
+    "generate": "drizzle-kit generate --schema=./src/server/db/schema.ts --dialect=sqlite",
+    "migrate:dev": "drizzle-kit generate:sqlite && bunx wrangler d1 migrations apply test-stack",
+    "migrate:prd": "drizzle-kit generate:sqlite && bunx wrangler d1 migrations apply test-stack --remote",
+    "studio": "drizzle-kit studio --config=./drizzle.config.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.4.2",
